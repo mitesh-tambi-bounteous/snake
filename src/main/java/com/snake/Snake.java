@@ -33,6 +33,11 @@ public final class Snake {
         return body.contains(candidate);
     }
 
+    public void reset(List<Position> body) {
+        this.body.clear();
+        this.body.addAll(body);
+    }
+
     public void advance(Position newHead, boolean grow) {
         body.addFirst(newHead);
         if (!grow) {

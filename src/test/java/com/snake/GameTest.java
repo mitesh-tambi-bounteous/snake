@@ -76,6 +76,21 @@ class GameTest {
     }
 
     @Test
+    void restartResetsSnakeToStartingPositionAndScoreToZero() {
+        List<Position> startingBody = List.of(new Position(9, 5), new Position(8, 5));
+        Snake snake = new Snake(startingBody);
+        Game game = new Game(10, 10, snake, new Food(new Position(0, 0)), new FoodSpawner(new Random(42)));
+        game.tick(Direction.RIGHT);
+        assertEquals(GameStatus.GAME_OVER, game.status());
+
+        game.restart();
+
+        assertEquals(startingBody, game.snakeSegments());
+        assertEquals(0, game.score());
+        assertEquals(GameStatus.RUNNING, game.status());
+    }
+
+    @Test
     void eatingFoodReplacesItWithASpawnedCellNotOnTheSnake() {
         Snake snake = new Snake(List.of(new Position(5, 5), new Position(4, 5), new Position(3, 5)));
         Game game = new Game(10, 10, snake, new Food(new Position(6, 5)), new FoodSpawner(new Random(42)));
