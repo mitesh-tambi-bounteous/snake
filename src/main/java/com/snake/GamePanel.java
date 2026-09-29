@@ -11,6 +11,7 @@ import javax.swing.AbstractAction;
 import javax.swing.JComponent;
 import javax.swing.JPanel;
 import javax.swing.KeyStroke;
+import java.util.List;
 import java.util.Random;
 
 public final class GamePanel extends JPanel implements ActionListener {
@@ -81,8 +82,10 @@ public final class GamePanel extends JPanel implements ActionListener {
     @Override
     protected void paintComponent(Graphics g) {
         super.paintComponent(g);
-        g.setColor(Color.RED);
-        for (Position segment : game.snakeSegments()) {
+        List<Position> segments = game.snakeSegments();
+        for (int i = 0; i < segments.size(); i++) {
+            Position segment = segments.get(i);
+            g.setColor(i == 0 ? Color.RED.darker() : Color.RED);
             g.fillRect(segment.x() * cellSize, segment.y() * cellSize, cellSize, cellSize);
         }
         Position food = game.foodPosition();
