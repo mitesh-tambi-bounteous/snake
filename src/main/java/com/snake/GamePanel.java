@@ -5,10 +5,12 @@ import java.awt.Graphics;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
-import java.awt.event.KeyListener;
+import javax.swing.AbstractAction;
+import javax.swing.JComponent;
 import javax.swing.JPanel;
+import javax.swing.KeyStroke;
 
-public final class GamePanel extends JPanel implements ActionListener, KeyListener {
+public final class GamePanel extends JPanel implements ActionListener {
 
     private final Game game;
     private final int cellSize;
@@ -18,21 +20,27 @@ public final class GamePanel extends JPanel implements ActionListener, KeyListen
         this.game = game;
         this.cellSize = cellSize;
         setFocusable(true);
-        addKeyListener(this);
+        bindArrowKey(KeyEvent.VK_UP, Direction.UP);
+        bindArrowKey(KeyEvent.VK_DOWN, Direction.DOWN);
+        bindArrowKey(KeyEvent.VK_LEFT, Direction.LEFT);
+        bindArrowKey(KeyEvent.VK_RIGHT, Direction.RIGHT);
+    }
+
+    private void bindArrowKey(int keyCode, Direction mapped) {
+        String actionKey = "direction_" + mapped.name();
+        getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(KeyStroke.getKeyStroke(keyCode, 0), actionKey);
+        getActionMap().put(actionKey, new AbstractAction() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                direction = mapped;
+            }
+        });
     }
 
     @Override
     public void actionPerformed(ActionEvent e) {
         game.tick(direction);
         repaint();
-    }
-
-    @Override
-    public void keyPressed(KeyEvent e) {
-        Direction mapped = mapKey(e.getKeyCode());
-        if (mapped != null) {
-            direction = mapped;
-        }
     }
 
     static Direction mapKey(int keyCode) {
@@ -53,20 +61,17 @@ public final class GamePanel extends JPanel implements ActionListener, KeyListen
     @Override
     protected void paintComponent(Graphics g) {
         super.paintComponent(g);
-        g.setColor(Color.GREEN);
+        g.setColor(Color.RED);
         for (Position segment : game.snakeSegments()) {
             g.fillRect(segment.x() * cellSize, segment.y() * cellSize, cellSize, cellSize);
         }
-        g.setColor(Color.RED);
+        g.setColor(Color.GREEN);
         Position food = game.foodPosition();
         g.fillRect(food.x() * cellSize, food.y() * cellSize, cellSize, cellSize);
-    }
 
-    @Override
-    public void keyTyped(KeyEvent e) {
-    }
-
-    @Override
-    public void keyReleased(KeyEvent e) {
+        g.setColor(Color.BLACK);
+        String scoreText = "Score: " + game.score();
+        int textWidth = g.getFontMetrics().stringWidth(scoreText);
+        g.drawString(scoreText, (getWidth() - textWidth) / 2, 15);
     }
 }

@@ -1,5 +1,6 @@
 package com.snake;
 
+import java.awt.Dimension;
 import java.util.List;
 import java.util.Random;
 import javax.swing.JFrame;
@@ -14,11 +15,12 @@ public class SnakeGameWindow extends JFrame {
     public SnakeGameWindow() {
         super("Snake");
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        setSize(600, 600);
 
         Game game = createInitialGame();
         GamePanel panel = new GamePanel(game, CELL_SIZE);
+        panel.setPreferredSize(new Dimension(GRID_SIZE * CELL_SIZE, GRID_SIZE * CELL_SIZE));
         add(panel);
+        pack();
         new Timer(TICK_INTERVAL_MS, panel).start();
         panel.requestFocusInWindow();
     }
