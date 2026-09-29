@@ -1,6 +1,7 @@
 package com.snake;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 import java.io.File;
 import java.io.IOException;
@@ -21,6 +22,7 @@ class StandaloneJarBuildTest {
         assertEquals(TaskOutcome.SUCCESS, result.task(":jar").getOutcome());
 
         File[] jars = new File("build/libs").listFiles((d, n) -> n.endsWith(".jar"));
+        assertNotNull(jars, "build/libs directory not found or not readable");
         assertEquals(1, jars.length);
         try (JarFile jar = new JarFile(jars[0])) {
             assertEquals(
