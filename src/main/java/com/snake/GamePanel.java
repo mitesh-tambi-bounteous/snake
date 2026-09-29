@@ -1,7 +1,9 @@
 package com.snake;
 
 import java.awt.Color;
+import java.awt.Font;
 import java.awt.Graphics;
+import java.awt.FontMetrics;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
@@ -77,9 +79,15 @@ public final class GamePanel extends JPanel implements ActionListener {
         for (Position segment : game.snakeSegments()) {
             g.fillRect(segment.x() * cellSize, segment.y() * cellSize, cellSize, cellSize);
         }
-        g.setColor(Color.GREEN);
         Position food = game.foodPosition();
-        g.fillRect(food.x() * cellSize, food.y() * cellSize, cellSize, cellSize);
+        Font previousFont = g.getFont();
+        g.setFont(previousFont.deriveFont(Font.PLAIN, (float) cellSize));
+        FontMetrics foodMetrics = g.getFontMetrics();
+        String appleGlyph = "🍎";
+        int glyphX = food.x() * cellSize + (cellSize - foodMetrics.stringWidth(appleGlyph)) / 2;
+        int glyphY = food.y() * cellSize + foodMetrics.getAscent();
+        g.drawString(appleGlyph, glyphX, glyphY);
+        g.setFont(previousFont);
 
         g.setColor(Color.BLACK);
         String scoreText = "Score: " + game.score();
