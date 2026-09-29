@@ -11,12 +11,18 @@ import javax.swing.AbstractAction;
 import javax.swing.JComponent;
 import javax.swing.JPanel;
 import javax.swing.KeyStroke;
+import java.util.Random;
 
 public final class GamePanel extends JPanel implements ActionListener {
 
+    private static final String[] FOOD_GLYPHS = {"🍎", "🍌", "🍇", "🍊", "🍓", "🍒", "🍍"};
+
     private final Game game;
     private final int cellSize;
+    private final Random glyphRandom = new Random();
     private Direction direction = Direction.RIGHT;
+    private Position lastFoodPosition;
+    private String currentFoodGlyph = FOOD_GLYPHS[0];
 
     public GamePanel(Game game, int cellSize) {
         this.game = game;
@@ -80,13 +86,16 @@ public final class GamePanel extends JPanel implements ActionListener {
             g.fillRect(segment.x() * cellSize, segment.y() * cellSize, cellSize, cellSize);
         }
         Position food = game.foodPosition();
+        if (!food.equals(lastFoodPosition)) {
+            lastFoodPosition = food;
+            currentFoodGlyph = FOOD_GLYPHS[glyphRandom.nextInt(FOOD_GLYPHS.length)];
+        }
         Font previousFont = g.getFont();
         g.setFont(previousFont.deriveFont(Font.PLAIN, (float) cellSize));
         FontMetrics foodMetrics = g.getFontMetrics();
-        String appleGlyph = "🍎";
-        int glyphX = food.x() * cellSize + (cellSize - foodMetrics.stringWidth(appleGlyph)) / 2;
+        int glyphX = food.x() * cellSize + (cellSize - foodMetrics.stringWidth(currentFoodGlyph)) / 2;
         int glyphY = food.y() * cellSize + foodMetrics.getAscent();
-        g.drawString(appleGlyph, glyphX, glyphY);
+        g.drawString(currentFoodGlyph, glyphX, glyphY);
         g.setFont(previousFont);
 
         g.setColor(Color.BLACK);
