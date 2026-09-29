@@ -1,0 +1,11 @@
+# bnts-arc project settings for the Snake game (Java 17, Swing/AWT, Gradle).
+# setup_command left unset: ./gradlew does not exist until SNAKE-STORY-005 creates it.
+
+# Plans label Maven Central libraries (e.g. JUnit) as "maven". With Gradle there is nothing
+# to install per library: it goes in build.gradle and Gradle downloads it at build time.
+package_install_commands:
+  maven: "echo 'declared in build.gradle, resolved by Gradle at build time:' {name} {version}"
+
+commands:
+  test: "./gradlew test --no-daemon"
+  build: "./gradlew build --no-daemon"
