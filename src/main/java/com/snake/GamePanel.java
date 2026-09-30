@@ -24,6 +24,18 @@ public final class GamePanel extends JPanel implements ActionListener {
         bindArrowKey(KeyEvent.VK_DOWN, Direction.DOWN);
         bindArrowKey(KeyEvent.VK_LEFT, Direction.LEFT);
         bindArrowKey(KeyEvent.VK_RIGHT, Direction.RIGHT);
+        bindRestartKey();
+    }
+
+    private void bindRestartKey() {
+        getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(KeyStroke.getKeyStroke(KeyEvent.VK_R, 0), "restart");
+        getActionMap().put("restart", new AbstractAction() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                game.restart();
+                repaint();
+            }
+        });
     }
 
     private void bindArrowKey(int keyCode, Direction mapped) {
@@ -73,5 +85,15 @@ public final class GamePanel extends JPanel implements ActionListener {
         String scoreText = "Score: " + game.score();
         int textWidth = g.getFontMetrics().stringWidth(scoreText);
         g.drawString(scoreText, (getWidth() - textWidth) / 2, 15);
+
+        if (game.status() == GameStatus.GAME_OVER) {
+            String overlayText = gameOverOverlayText();
+            int overlayWidth = g.getFontMetrics().stringWidth(overlayText);
+            g.drawString(overlayText, (getWidth() - overlayWidth) / 2, getHeight() / 2);
+        }
+    }
+
+    String gameOverOverlayText() {
+        return "Game Over  Score: " + game.score() + "  Press R to restart";
     }
 }

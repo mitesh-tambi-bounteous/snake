@@ -8,6 +8,7 @@ public final class Game {
     private final int height;
     private final Snake snake;
     private final FoodSpawner foodSpawner;
+    private final List<Position> initialSnakeBody;
     private Food food;
     private int score = 0;
     private GameStatus status = GameStatus.RUNNING;
@@ -18,6 +19,14 @@ public final class Game {
         this.snake = snake;
         this.food = food;
         this.foodSpawner = foodSpawner;
+        this.initialSnakeBody = List.copyOf(snake.segments());
+    }
+
+    public void restart() {
+        snake.reset(initialSnakeBody);
+        score = 0;
+        status = GameStatus.RUNNING;
+        food = new Food(foodSpawner.spawn(width, height, snake));
     }
 
     public void tick(Direction direction) {
